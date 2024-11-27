@@ -57,45 +57,54 @@
 	}
 
 	const zipSelected: EventListener = async (e) => {
-		working = true;
-        duration = 0;
-
 		const file = zipFileInput.files?.[0];
-		if (!file) return;
 
-		const zipReader = new ZipReader(file.stream());
+		if (file) {
+			working = true;
+			duration = 0;
 
-		const entries = await zipReader.getEntries();
+			const zipReader = new ZipReader(file.stream());
 
-		for (const eventsFile of entries.filter((entry) =>
-			entry.filename.startsWith('activity/reporting/events')
-		)) {
-			const thisFileStream = new TransformStream();
+			const entries = await zipReader.getEntries();
 
-			if (!eventsFile.getData) continue;
+			for (const eventsFile of entries.filter((entry) =>
+				entry.filename.startsWith('activity/reporting/events')
+			)) {
+				const thisFileStream = new TransformStream();
 
-			await Promise.all([
-				eventsFile.getData<ArrayBuffer>(thisFileStream.writable, { onprogress }),
-				thisFileStream.readable,
-				readDiscordLines(thisFileStream.readable)
-			]);
+				if (!eventsFile.getData) continue;
+
+				await Promise.all([
+					eventsFile.getData<ArrayBuffer>(thisFileStream.writable, { onprogress }),
+					thisFileStream.readable,
+					readDiscordLines(thisFileStream.readable)
+				]);
+			}
+
+			zipReader.close();
+
+			working = false;
+		} else {
+			window.alert('You must select a zip file.');
 		}
-
-		zipReader.close();
-
-		working = false;
 	};
 </script>
 
 <svelte:head>
 	<title>Discord Talk Time</title>
-    <meta name="title" content="Discord Talk Time" />
-    <meta name="description" content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc." />
+	<meta name="title" content="Discord Talk Time" />
+	<meta
+		name="description"
+		content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc."
+	/>
 
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Discord Talk Time" />
-    <meta property="og:url" content="https://dtt.cpf.sh/" />
-    <meta property="og:description" content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc." />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Discord Talk Time" />
+	<meta property="og:url" content="https://dtt.cpf.sh/" />
+	<meta
+		property="og:description"
+		content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc."
+	/>
 </svelte:head>
 
 <header>
@@ -141,8 +150,9 @@
 			ever leave your computer.
 		</p>
 		<p>
-			You can <a href="https://github.com/mashedkeyboard/discord-talk-time">read the source code</a> to see what this is doing - or you can run it offline without
-			your computer connected to the Internet, just save this page first!
+			You can <a href="https://github.com/mashedkeyboard/discord-talk-time">read the source code</a>
+			to see what this is doing - or you can run it offline without your computer connected to the Internet,
+			just save this page first!
 		</p>
 		<p>
 			Discord data export files may be quite large, so you will probably want to run this on a
