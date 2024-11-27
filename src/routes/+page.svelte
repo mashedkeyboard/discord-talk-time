@@ -88,7 +88,14 @@
 </script>
 
 <svelte:head>
-	<title>How many hours have you spent in Discord calls?</title>
+	<title>Discord Talk Time</title>
+    <meta name="title" content="Discord Talk Time" />
+    <meta name="description" content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Discord Talk Time" />
+    <meta property="og:url" content="https://dtt.cpf.sh/" />
+    <meta property="og:description" content="How many hours have you spent in Discord calls? Unofficial and not affiliated with Discord, Inc." />
 </svelte:head>
 
 <header>
